@@ -1,10 +1,11 @@
 import os
 import pandas as pd
-# from virusTotalAPI import testHash, testURL
+from virusTotalAPI import testHash, testURL
 from processFunctions import processImage, getLoadList, processWebHistory, exportFile
 
+pd.set_option('display.max_columns', None)
 
-# function for choosing target image
+
 def chooseImage():
     loadList = getLoadList()
     print("Available images in folder: ")
@@ -18,10 +19,17 @@ def chooseImage():
                 print("Invalid selection, please choose again.")
 
 
-# function to display menu options
+def getFullPath(fileName, regex):
+    df = displayFiles(f"{fileName}_output.csv")
+    return df[df["File Path"].str.contains(regex)].iloc[0]["File Path"]
+
+
 def showMenu():
+
+
+
     print("""
-===== Arcane Functions =====
+===== Arcana Functions =====
 1. Display Files
 2. Keyword Search
 3. Export File
@@ -30,49 +38,41 @@ def showMenu():
 6. Exit
 """)
 
-    # prompts user for menu input
     selection = input("Choose an option: ")
     return selection
 
 
-# function to display all files in the image
 def displayFiles(fileName):
     df = pd.read_csv(fileName)
     return df
 
 
-# function to search for files containing specific keywords
 def searchFile(fileName):
-    # prompts user for search input
     searchString = input("Enter search: ")
-    print(f"Searching for {searchString}..")
 
-    # display files containing keywords
+    print(f"Searching for {searchString}..")
     df = displayFiles(fileName)
     return df.loc[df['File'].str.contains(searchString, case=False)]
 
 
-# TODO
-# function to display browser history found in the image
 def displayWebHistory(fileName, fs_object):
-    processWebHistory(fileName, fs_object)
+    chrome_regex = "Google\/Chrome\/User Data\/\w+\/History"
+    firefox_regex = "Mozilla\/Firefox\/Profiles\/.+\/places\.sqlite"
 
-    # check if there is a csv file containing browser history in the image file
+    chrome = getFullPath(fileName, chrome_regex)
+    firefox = getFullPath(fileName, firefox_regex)
+
+    processWebHistory(fileName, fs_object, chrome, firefox)
+
     try:
         df = pd.read_csv(f"{fileName}_history.csv", index_col=0)
         return df
-
-    # display error message if browser history file does not exist
     except Exception as e:
         print(f"Exception: {e}")
     return "No Web History found."
 
 
-# TODO
-# function to scan for infected files in the image
-def virusScan(fileName):
-    print("Scanning Files..")
-    file_df = pd.read_csv(f"{fileName}_output.csv")
+def fileScan(file_df):
     # Scan files
     files = []
     for index, row in file_df.iterrows():
@@ -87,10 +87,11 @@ def virusScan(fileName):
             verdict = 'safe'
         files.append([index, row['File Path'], verdict])
 
-    # scan for unsafe websites found in the browser history
-    print("Scanning Websites..")
-    url_df = pd.read_csv(f"{fileName}_history.csv", index_col=0)
+    return pd.DataFrame(files, columns=['Index', 'File Path', 'Verdict'])
 
+
+def urlScan(url_df):
+    # Scan URLs
     urls = []
     for index, row in url_df.iterrows():
         if index > 0:  # Limit testing to one URL, due to API constraints
@@ -104,24 +105,93 @@ def virusScan(fileName):
             verdict = 'safe'
         urls.append([index, row['URL'], verdict])
 
+    return pd.DataFrame(urls, columns=['Index', 'URL', 'Verdict'])
+
+
+def getData(fileName, dataType="files"):
+    if dataType == "files":
+        print("Scanning Files..")
+        file_df = pd.read_csv(f"{fileName}_output.csv")
+        return file_df
+    else:
+        print("Scanning Websites..")
+        url_df = pd.read_csv(f"{fileName}_history.csv", index_col=0)
+        return url_df
+
+
+def fullScan(fileName):
+    file_df = getData(fileName, "files")
+    results_files = fileScan(file_df)
+
+    url_df = getData(fileName, "URLs")
+    results_URLs = urlScan(url_df)
+
     # Display files and websites which are malicious
     # path for files and url for websites
     print("Files: ")
-    print(pd.DataFrame(files, columns=['Index', 'File Path', 'Verdict']))
+    print(results_files)
     print("URLs: ")
-    print(pd.DataFrame(urls, columns=['Index', 'URL', 'Verdict']))
+    print(results_URLs)
+
+
+def selectedScan(fileName, dataType="files"):
+    if dataType == "files":
+        searchString = input("Please enter the filePath, or path thereof: ")
+        print(f"Scanning Files ({searchString}): ")
+        file_df = getData(fileName, "files")
+        filtered_df = file_df.loc[file_df['File Path'].str.contains(searchString)]
+        results_files = fileScan(filtered_df)
+
+        print("\nFiles: ")
+        print(results_files)
+    else:
+        searchString = input("Please enter the URL, or path thereof: ")
+        print(f"Scanning Websites ({searchString}): ")
+        url_df = getData(fileName, "URLs")
+        filtered_df = url_df.loc[url_df['URL'].str.contains(searchString)]
+        results_URLs = urlScan(filtered_df)
+
+        print("\nURLs: ")
+        print(results_URLs)
+
+
+def virusScan(fileName):
+    # Select either full scan or single scan for file or url
+    print("""
+===== Virus Scan (VirusTotal) =====
+1. Full Scan (All files and URLs)
+2. Scan files by Keyword
+3. Scan URLs by Keyword
+4. Back
+""")
+
+    while True:
+        selection = input("Choose an option: ")
+        if selection == "1":
+            fullScan(fileName)
+            break
+        elif selection == "2":
+            selectedScan(fileName, "files")
+            break
+        elif selection == "3":
+            selectedScan(fileName, "URLs")
+            break
+        elif selection == "4":
+            break
+        else:
+            print("Invalid selection, please choose again.\n")
 
 
 def main():
     print(r"""
-         ________  ________  ________  ________  ________   ________     
-        |\   __  \|\   __  \|\   ____\|\   __  \|\   ___  \|\   __  \    
-        \ \  \|\  \ \  \|\  \ \  \___|\ \  \|\  \ \  \\ \  \ \  \|\  \   
-         \ \   __  \ \   _  _\ \  \    \ \   __  \ \  \\ \  \ \   __  \  
-          \ \  \ \  \ \  \\  \\ \  \____\ \  \ \  \ \  \\ \  \ \  \ \  \ 
-           \ \__\ \__\ \__\\ _\\ \_______\ \__\ \__\ \__\\ \__\ \__\ \__\
-            \|__|\|__|\|__|\|__|\|_______|\|__|\|__|\|__| \|__|\|__|\|__|
-                """)
+           ________  ________  ________  ________  ________   ________     
+          |\   __  \|\   __  \|\   ____\|\   __  \|\   ___  \|\   __  \    
+          \ \  \|\  \ \  \|\  \ \  \___|\ \  \|\  \ \  \\ \  \ \  \|\  \   
+           \ \   __  \ \   _  _\ \  \    \ \   __  \ \  \\ \  \ \   __  \  
+            \ \  \ \  \ \  \\  \\ \  \____\ \  \ \  \ \  \\ \  \ \  \ \  \ 
+             \ \__\ \__\ \__\\ _\\ \_______\ \__\ \__\ \__\\ \__\ \__\ \__\
+              \|__|\|__|\|__|\|__|\|_______|\|__|\|__|\|__| \|__|\|__|\|__|
+                  """)
 
     fileName = chooseImage()
     print(f"{fileName} selected. Processing image..")
