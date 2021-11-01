@@ -45,7 +45,7 @@ def fat_info(filename, partition_start):
                     int.from_bytes(file_title[26:28], byteorder='little'))
                 csa = cluser2_start + ((int.from_bytes(file_title[26:28], byteorder='little') - 2) * 8)
                 file_content = txt[(int(csa) * 512) - (partition_start * 512):(int(csa) * 512) - (
-                            partition_start * 512) + 16]
+                        partition_start * 512) + 16]
                 result += "\nFirst 16 bytes of content of that file: " + str(
                     file_content) + "\n--------------------------------------------------------------"
                 break
@@ -119,7 +119,7 @@ def check(x):  # checks for the partition type NB: decimal format
     }[x]
 
 
-# this mathod allows for file upload and it also glues all info received together
+# this method allows for file upload and it also glues all info received together
 def upload_file():
     filename = askopenfilename()  # takes file and puts it into variable
     txt = ""

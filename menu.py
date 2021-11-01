@@ -1,9 +1,10 @@
 import os
 import pandas as pd
-#from virusTotalAPI import testHash, testURL
+# from virusTotalAPI import testHash, testURL
 from processFunctions import processImage, getLoadList, processWebHistory, exportFile
 
 
+# function for choosing target image
 def chooseImage():
     loadList = getLoadList()
     print("Available images in folder: ")
@@ -17,6 +18,7 @@ def chooseImage():
                 print("Invalid selection, please choose again.")
 
 
+# function to display menu options
 def showMenu():
     print("""
 ===== Arcane Functions =====
@@ -28,36 +30,46 @@ def showMenu():
 6. Exit
 """)
 
+    # prompts user for menu input
     selection = input("Choose an option: ")
     return selection
 
 
+# function to display all files in the image
 def displayFiles(fileName):
     df = pd.read_csv(fileName)
     return df
 
 
+# function to search for files containing specific keywords
 def searchFile(fileName):
+    # prompts user for search input
     searchString = input("Enter search: ")
-
     print(f"Searching for {searchString}..")
+
+    # display files containing keywords
     df = displayFiles(fileName)
     return df.loc[df['File'].str.contains(searchString, case=False)]
 
 
 # TODO
+# function to display browser history found in the image
 def displayWebHistory(fileName, fs_object):
     processWebHistory(fileName, fs_object)
 
+    # check if there is a csv file containing browser history in the image file
     try:
         df = pd.read_csv(f"{fileName}_history.csv", index_col=0)
         return df
+
+    # display error message if browser history file does not exist
     except Exception as e:
         print(f"Exception: {e}")
     return "No Web History found."
 
 
 # TODO
+# function to scan for infected files in the image
 def virusScan(fileName):
     print("Scanning Files..")
     file_df = pd.read_csv(f"{fileName}_output.csv")
@@ -75,6 +87,7 @@ def virusScan(fileName):
             verdict = 'safe'
         files.append([index, row['File Path'], verdict])
 
+    # scan for unsafe websites found in the browser history
     print("Scanning Websites..")
     url_df = pd.read_csv(f"{fileName}_history.csv", index_col=0)
 

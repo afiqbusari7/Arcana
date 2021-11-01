@@ -11,6 +11,7 @@ from datetime import datetime
 from hashSum import getHashFromName, getHashFromData
 
 
+# function to process the selected image file
 def processImage(image, img_type, output, part_type, save=True, computeHash=True):
     volume = None
     print("[+] Opening {}".format(image))
@@ -39,6 +40,7 @@ def processImage(image, img_type, output, part_type, save=True, computeHash=True
     return fs_object
 
 
+# function to process the browser history found in the image
 def processWebHistory(fileName, fs_object):
     # Download history datafiles
     chrome = "Documents and Settings/Administrator/Local Settings/Application Data/Google/Chrome/User Data/Default/History"
@@ -68,6 +70,7 @@ def processWebHistory(fileName, fs_object):
     df_merge.to_csv(f"{fileName}_history.csv")
 
 
+# function to export a selected file found in the image
 def exportFile(fs_object, filePath=None, folder="extracted"):
     if filePath is None:
         # Get path of file
@@ -99,6 +102,7 @@ class ewf_Img_Info(pytsk3.Img_Info):
         return self._ewf_handle.get_media_size()
 
 
+# function to open the image file
 def openFS(vol, img, output, save, computeHash):
     print("[+] Recursing through files..")
     recursed_data = []
@@ -127,6 +131,7 @@ def openFS(vol, img, output, save, computeHash):
     return fs
 
 
+# function to recursively step through the files and directories in the image
 def recurseFiles(part, fs, root_dir, dirs, data, parent, computeHash):
     dirs.append(root_dir.info.fs_file.meta.addr)
     for fs_object in root_dir:
@@ -189,12 +194,14 @@ def recurseFiles(part, fs, root_dir, dirs, data, parent, computeHash):
     return data
 
 
+# function to convert timestamp to UTC timezone
 def convertTime(ts):
     if str(ts) == "0":
         return ""
     return datetime.utcfromtimestamp(ts)
 
 
+# function to write output to csv file
 def csvWriter(data, output):
     if data == []:
         print("[-] No output results to write")
@@ -209,7 +216,7 @@ def csvWriter(data, output):
             csv_writer.writerows(result_list)
 
 
-### List available images
+# List all available images
 # Search for E01 image
 def getLoadList():
     fileList = [f for f in listdir(os.getcwd()) if isfile(join(os.getcwd(), f))]
