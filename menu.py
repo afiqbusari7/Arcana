@@ -1,7 +1,11 @@
 import os
+import validators
 import pandas as pd
-from virusTotalAPI import testHash, testURL
+from virusTotalAPI import testHash, testHash2, testURL
 from processFunctions import processImage, getLoadList, processWebHistory, exportFile
+from pathlib import Path
+from hashSum import getHashFromName
+import hashlib
 
 pd.set_option('display.max_columns', None)
 
@@ -23,11 +27,19 @@ def getFullPath(fileName, regex):
     df = displayFiles(f"{fileName}_output.csv")
     return df[df["File Path"].str.contains(regex)].iloc[0]["File Path"]
 
+def showInput():
+    print("""
+===== Arcana Input Types =====
+1. Raw Image
+2. File
+3. URL
+4. Exit
+""")
+
+    userInput = input("Choose an option: ")
+    return userInput
 
 def showMenu():
-
-
-
     print("""
 ===== Arcana Functions =====
 1. Display Files
@@ -181,18 +193,7 @@ def virusScan(fileName):
         else:
             print("Invalid selection, please choose again.\n")
 
-
-def main():
-    print(r"""
-           ________  ________  ________  ________  ________   ________     
-          |\   __  \|\   __  \|\   ____\|\   __  \|\   ___  \|\   __  \    
-          \ \  \|\  \ \  \|\  \ \  \___|\ \  \|\  \ \  \\ \  \ \  \|\  \   
-           \ \   __  \ \   _  _\ \  \    \ \   __  \ \  \\ \  \ \   __  \  
-            \ \  \ \  \ \  \\  \\ \  \____\ \  \ \  \ \  \\ \  \ \  \ \  \ 
-             \ \__\ \__\ \__\\ _\\ \_______\ \__\ \__\ \__\\ \__\ \__\ \__\
-              \|__|\|__|\|__|\|__|\|_______|\|__|\|__|\|__| \|__|\|__|\|__|
-                  """)
-
+def inputRawImage():
     fileName = chooseImage()
     print(f"{fileName} selected. Processing image..")
 
@@ -235,6 +236,79 @@ def main():
             exit()
         else:
             print("Invalid selection, please choose again.\n")
+def inputFile():
+    while True:
+        selection = input("\nInput directory of file you would like to scan: ")
+        fileName = Path(selection)
+        # Check if file exists in directory
+        if fileName.is_file():
+            files = []
+            # Process Hash
+            # md5hash = hashlib.sha256()
+            # with open(fileName, "rb") as f:
+            #     md5hash.update(f.read())
+            result = testHash2(getHashFromName(fileName))
+            # print(result)
+            # print("test")
+            # Add those which are malicious
+            # if result['malicious'] > 0:
+            #     verdict = 'malicious'
+            # else:
+            #     verdict = 'safe'
+            # files.append([0, selection, verdict])
+
+            # # Display files which are malicious
+            # print("Files: ")
+            # print(pd.DataFrame(files, columns = ['Index', 'File Path', 'Verdict']))
+        else:
+            print("File could not be found in directory, please choose again.")
+
+def inputURL():
+    while True:
+        selection = input("\nInput URL you would like to scan eg. https://www.google.com: ")
+        if validators.url(selection) == True:
+            urls = []
+            
+            # Process URL
+            result = testURL(selection)
+            # Add those which are malicious
+            if result['malicious'] > 0:
+                verdict = 'malicious'
+            else:
+                verdict = 'safe'
+            urls.append([0, selection, verdict])
+
+            # # Display websites which are malicious
+            print(pd.DataFrame(urls, columns = ['Index', 'URL', 'Verdict']))
+
+            exit()
+        else:
+            print("URL is in the wrong format, please enter URL again. eg. https://www.google.com")
+
+def main():
+    print(r"""
+           ________  ________  ________  ________  ________   ________     
+          |\   __  \|\   __  \|\   ____\|\   __  \|\   ___  \|\   __  \    
+          \ \  \|\  \ \  \|\  \ \  \___|\ \  \|\  \ \  \\ \  \ \  \|\  \   
+           \ \   __  \ \   _  _\ \  \    \ \   __  \ \  \\ \  \ \   __  \  
+            \ \  \ \  \ \  \\  \\ \  \____\ \  \ \  \ \  \\ \  \ \  \ \  \ 
+             \ \__\ \__\ \__\\ _\\ \_______\ \__\ \__\ \__\\ \__\ \__\ \__\
+              \|__|\|__|\|__|\|__|\|_______|\|__|\|__|\|__| \|__|\|__|\|__|
+                  """)
+    while True:
+        userInput = showInput()
+
+        if userInput == "1":
+            inputRawImage()
+        elif userInput == "2":
+            inputFile()
+        elif userInput == "3":
+            inputURL()
+        elif userInput == "4":
+            print("Exiting the program..")
+            exit()
+        else:
+            print("Invalid selection, please choose again4.\n")    
 
 
 if __name__ == "__main__":

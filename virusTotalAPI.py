@@ -3,7 +3,7 @@ from pprint import pprint
 from base64 import urlsafe_b64encode
 from virustotal_python import Virustotal
 
-API_KEY = ""
+API_KEY = "f6957b4ceada8ef6fb49a7c84fc143f8cb6f5595038f0cace0798ffb674b040c"
 
 vtotal = Virustotal(API_KEY=API_KEY, API_VERSION="v3")
 
@@ -28,6 +28,16 @@ def testHash(FILE_ID):
         return {["malicious"]: 0} # If file have not been scanned before
     # pprint(resp.data)
     return parseResults(resp)
+
+### Testing API for Hash
+def testHash2(FILE_ID):
+    # try:
+        resp = vtotal.request(f"files/{FILE_ID}")
+
+        # return parseResults(resp)
+    # except Exception as err:
+    #     print(f"An error occurred: {err}\nCatching and continuing with program.")
+    
 
 # FILE_ID = "71a0d6adc569d1a1d50e8e865a05c10887d849ed3b18a78096af917a19a716e4"
 # testHash(FILE_ID)
