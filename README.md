@@ -13,13 +13,15 @@ API_KEY = ""
 ```
 IMPORTANT: VirusTotal will only allow limited scan requests for free accounts. Please upgrade to the premium VirusTotal API to increase the total requests you can make. 
 ## Required Libraries
-- pypytsk3
-- virustotal-python
-- pandas
 - libewf-python
+- pandas
+- pypytsk3
+- tabulate
+- validators
+- virustotal-python
 ## Installation
 ```
-git clone https://github.com/afiqbusari7/Arcana-
-cd Arcana-
+git clone https://github.com/afiqbusari7/Arcana
+cd Arcana
 pip install -r requirements.txt
 ```
