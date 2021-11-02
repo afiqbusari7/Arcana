@@ -1,6 +1,8 @@
 import os
 import validators
 import pandas as pd
+
+import logAnal
 from virusTotalAPI import testHash, testURL
 from processFunctions import processImage, getLoadList, processWebHistory, exportFile
 from pathlib import Path
@@ -25,9 +27,10 @@ def arcanaMenu():
 1. Raw Image
 2. File
 3. URL
-4. User Manual
-5. GitHub
-6. Exit
+4. Analyse Logs (LIVE)
+5. User Manual
+6. GitHub
+7. Exit
 """)
 
     userInput = input("Choose an option: ")
@@ -395,10 +398,18 @@ def main():
         elif userInput == "3":
             inputURL()
         elif userInput == "4":
-            subprocess.Popen("User Manual.pdf", shell=True)
+            path = input("Please enter the path to the directory containing the logs "
+                               "(e.g. C:\Windows\System32\winevt\Logs) or enter \"1\" to use"
+                               " default path: ")
+            if int(path) == 1:
+                logAnal.analyse("C:\Windows\System32\winevt\Logs")
+            else:
+                logAnal.analyse(path)
         elif userInput == "5":
-            webbrowser.open('https://github.com/afiqbusari7/Arcana')
+            subprocess.Popen("User Manual.pdf", shell=True)
         elif userInput == "6":
+            webbrowser.open('https://github.com/afiqbusari7/Arcana')
+        elif userInput == "7":
             print("Exiting the program..")
             exit()
         else:
