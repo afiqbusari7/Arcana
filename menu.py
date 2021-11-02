@@ -1,11 +1,11 @@
 import os
 import validators
 import pandas as pd
-from virusTotalAPI import testHash, testHash2, testURL
+from virusTotalAPI import testHash, testURL
 from processFunctions import processImage, getLoadList, processWebHistory, exportFile
 from pathlib import Path
 from hashSum import getHashFromName
-import hashlib
+from tabulate import tabulate
 import subprocess
 import webbrowser
 
@@ -100,9 +100,9 @@ def fileScan(file_df):
         result = testHash(row['SHA256 Hash'])
         # Add those which are malicious
         if result['malicious'] > 0:
-            verdict = 'malicious'
+            verdict = 'Malicious'
         else:
-            verdict = 'safe'
+            verdict = 'Safe'
         files.append([index, row['File Path'], verdict])
 
     return pd.DataFrame(files, columns=['Index', 'File Path', 'Verdict'])
@@ -118,9 +118,9 @@ def urlScan(url_df):
         result = testURL(row['URL'])
         # Add those which are malicious
         if result['malicious'] > 0:
-            verdict = 'malicious'
+            verdict = 'Malicious'
         else:
-            verdict = 'safe'
+            verdict = 'Safe'
         urls.append([index, row['URL'], verdict])
 
     return pd.DataFrame(urls, columns=['Index', 'URL', 'Verdict'])
@@ -252,52 +252,42 @@ def inputRawImage():
 def inputFile():
     while True:
         selection = input("\nInput directory of file you would like to scan: ")
-        fileName = Path(selection)
+        fileName = Path(selection)        
         # Check if file exists in directory
         if fileName.is_file():
-            files = []
-            # Process Hash
-            # md5hash = hashlib.sha256()
-            # with open(fileName, "rb") as f:
-            #     md5hash.update(f.read())
-            result = testHash2(getHashFromName(fileName))
-            # print(result)
-            # print("test")
+            # Process File
+            result = testHash(getHashFromName(fileName))
             # Add those which are malicious
-            # if result['malicious'] > 0:
-            #     verdict = 'malicious'
-            # else:
-            #     verdict = 'safe'
-            # files.append([0, selection, verdict])
+            if result['malicious'] > 0:
+                verdict = 'Malicious'
+            else:
+                verdict = 'Safe'
 
-            # # Display files which are malicious
-            # print("Files: ")
-            # print(pd.DataFrame(files, columns = ['Index', 'File Path', 'Verdict']))
+            # Format table
+            print(tabulate([[selection, verdict]], headers=['File', 'Verdict'], tablefmt='orgtbl'))
+            exit()
         else:
             print("File could not be found in directory, please choose again.")
 
 
 def inputURL():
     while True:
-        selection = input("\nInput URL you would like to scan eg. https://www.google.com: ")
+        selection = input("\nInput URL you would like to scan eg. https://www.facebook.com: ")
+        # Check if URL is valid
         if validators.url(selection) == True:
-            urls = []
-
             # Process URL
             result = testURL(selection)
             # Add those which are malicious
             if result['malicious'] > 0:
-                verdict = 'malicious'
+                verdict = 'Malicious'
             else:
-                verdict = 'safe'
-            urls.append([0, selection, verdict])
-
-            # # Display websites which are malicious
-            print(pd.DataFrame(urls, columns=['Index', 'URL', 'Verdict']))
-
+                verdict = 'Safe'
+                
+            # Format table
+            print(tabulate([[selection, verdict]], headers=['URL', 'Verdict'], tablefmt='orgtbl'))
             exit()
         else:
-            print("URL is in the wrong format, please enter URL again. eg. https://www.google.com")
+            print("URL is in the wrong format, please enter URL again. eg. https://www.facebook.com")
 
 
 def main():
