@@ -27,6 +27,9 @@ def chooseImage():
             selection = input("\nChoose an image to process: ")
             if selection in [str(x) for x in list(range(len(loadList)))]:
                 return fileName
+            elif selection == "exit":
+                print("Exiting the program..")
+                exit()
             else:
                 print("Invalid selection, please choose again.")
 
@@ -59,7 +62,8 @@ def showMenu():
 3. Select File to Extract from Image
 4. Process and Display Web History
 5. Scan for Virus
-6. Exit
+6. Back
+7. Exit
 """)
 
     selection = input("Choose an option: ")
@@ -70,16 +74,17 @@ def getFiles(fileName):
     df = pd.read_csv(fileName)
     return df
 
+
 def iterateResults(df):
     index = 50
     maxLen = len(df)
     dfs = []
     while True:
         if index >= maxLen:
-            dfs.append(df[index-50:])
+            dfs.append(df[index - 50:])
             break
         else:
-            dfs.append(df[index-50:index])
+            dfs.append(df[index - 50:index])
         index += 50
 
     for df in dfs:
@@ -87,6 +92,7 @@ def iterateResults(df):
         nextData = input("'N' to cancel, else continue displaying next rows: ")
         if nextData in ["n", "N"]:
             break
+
 
 def displayFiles(fileName):
     iterateResults(getFiles(fileName))
@@ -105,12 +111,12 @@ def searchFile(fileName):
 def displayWebHistory(fileName, fs_object):
     chrome_regex = "Google\/Chrome\/User Data\/\w+\/History"
     firefox_regex = "Mozilla\/Firefox\/Profiles\/.+\/places\.sqlite"
-    
+
     chrome = getFullPath(fileName, chrome_regex)
     firefox = getFullPath(fileName, firefox_regex)
-    
+
     processWebHistory(fileName, fs_object, chrome, firefox)
-    
+
     try:
         df = pd.read_csv(f"{fileName}_history.csv", index_col=0)
         return df
@@ -154,6 +160,7 @@ def urlScan(url_df):
 
     return pd.DataFrame(urls, columns=['Index', 'URL', 'Verdict'])
 
+
 def getData(fileName, dataType="files"):
     if dataType == "files":
         print("Scanning Files..")
@@ -181,8 +188,8 @@ def fullScan(fileName):
 
 
 def selectedScan(fileName, dataType="files"):
-    if dataType == "files":    
-        searchString = input("Please enter the filePath, or path thereof: ")
+    if dataType == "files":
+        searchString = input("Please enter the file path, or part thereof: ")
         print(f"Scanning Files ({searchString}): ")
         file_df = getData(fileName, "files")
         filtered_df = file_df.loc[file_df['File Path'].str.contains(searchString)]
@@ -237,7 +244,7 @@ def inputRawImage():
 
     outputFile = f"{fileName}_output.csv"
     historyFile = f"{fileName}_history.csv"
-    
+
     # Check if outputFile exists
     if os.path.isfile(outputFile):
         choice = input("Image has been processed before, overwrite? (Y to overwrite) ")
@@ -273,6 +280,8 @@ def inputRawImage():
                 displayWebHistory(fileName, fs_object)
             virusScan(fileName)
         elif selection == "6":
+            break
+        elif selection == "7":
             print("Exiting the program..")
             exit()
         else:
@@ -282,7 +291,7 @@ def inputRawImage():
 def inputFile():
     while True:
         selection = input("\nInput directory of file you would like to scan: ")
-        fileName = Path(selection)        
+        fileName = Path(selection)
         # Check if file exists in directory
         if fileName.is_file():
             # Process File
@@ -295,6 +304,12 @@ def inputFile():
 
             # Format table
             print(tabulate([[selection, verdict]], headers=['File', 'Verdict'], tablefmt='orgtbl'))
+            exit()
+
+        elif selection == "break":
+            break
+        elif selection == "exit":
+            print("Exiting the program..")
             exit()
         else:
             print("File could not be found in directory, please choose again.")
@@ -312,9 +327,15 @@ def inputURL():
                 verdict = 'Malicious'
             else:
                 verdict = 'Safe'
-                
+
             # Format table
             print(tabulate([[selection, verdict]], headers=['URL', 'Verdict'], tablefmt='orgtbl'))
+            exit()
+
+        elif selection == "break":
+            break
+        elif selection == "exit":
+            print("Exiting the program..")
             exit()
         else:
             print("URL is in the wrong format, please enter URL again. eg. https://www.facebook.com")
@@ -347,7 +368,7 @@ def main():
             print("Exiting the program..")
             exit()
         else:
-            print("Invalid selection, please choose again4.\n")
+            print("Invalid selection, please choose again.\n")
 
 
 if __name__ == "__main__":

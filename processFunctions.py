@@ -10,6 +10,7 @@ from os.path import isfile, join
 from datetime import datetime
 from hashSum import getHashFromName, getHashFromData
 
+
 # function to process the selected image file
 def processImage(image, img_type, output, part_type, save=True, computeHash=True):
     volume = None
@@ -65,6 +66,7 @@ def processWebHistory(fileName, fs_object, chrome, firefox):
 
     df_merge = pd.concat([df, df2])
     df_merge.to_csv(f"{fileName}_history.csv")
+
 
 # function to export a selected file found in the image
 def exportFile(fs_object, filePath=None, folder="extracted"):
@@ -149,7 +151,7 @@ def recurseFiles(part, fs, root_dir, dirs, data, parent, computeHash):
             try:
                 if fs_object.info.meta.type == pytsk3.TSK_FS_META_TYPE_DIR:
                     f_type = "DIR"
-                    #file_ext = ""
+                    # file_ext = ""
                 else:
                     f_type = "FILE"
                 # if "." in file_name:
