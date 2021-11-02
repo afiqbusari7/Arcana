@@ -56,8 +56,8 @@ def showMenu():
 ===== Raw Image Functions =====
 1. Display Files
 2. Keyword Search
-3. Export File
-4. Process and display Web History
+3. Select File to Extract from Image
+4. Process and Display Web History
 5. Scan for Virus
 6. Exit
 """)
