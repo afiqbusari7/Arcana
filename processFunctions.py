@@ -27,7 +27,6 @@ def processImage(image, img_type, output, part_type, save=True, computeHash=True
         img_info = ewf_Img_Info(ewf_handle)
     else:
         img_info = pytsk3.Img_Info(image)
-
     try:
         if part_type is not None:
             attr_id = getattr(pytsk3, "TSK_VS_TYPE_" + part_type)
@@ -41,10 +40,8 @@ def processImage(image, img_type, output, part_type, save=True, computeHash=True
 
 
 # function to process the browser history found in the image
-def processWebHistory(fileName, fs_object):
+def processWebHistory(fileName, fs_object, chrome, firefox):
     # Download history datafiles
-    chrome = "Documents and Settings/Administrator/Local Settings/Application Data/Google/Chrome/User Data/Default/History"
-    firefox = "Documents and Settings/Administrator/Application Data/Mozilla/Firefox/Profiles/4wd37sh1.default/places.sqlite"
     exportFile(fs_object, chrome, "browser")
     exportFile(fs_object, firefox, "browser")
 
