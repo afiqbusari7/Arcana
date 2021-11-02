@@ -8,7 +8,7 @@ def getHashFromName(fileName):
         return md5hash.hexdigest()
 
 
-# function to get hash value of files
+# Function to get hash value of files
 def getHashFromData(fileData):
     md5hash = hashlib.sha256()
     md5hash.update(fileData)

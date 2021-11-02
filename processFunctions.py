@@ -11,7 +11,7 @@ from datetime import datetime
 from hashSum import getHashFromName, getHashFromData
 
 
-# function to process the selected image file
+# Function to process the selected image file
 def processImage(image, img_type, output, part_type, save=True, computeHash=True):
     volume = None
     print("[+] Opening {}".format(image))
@@ -40,7 +40,7 @@ def processImage(image, img_type, output, part_type, save=True, computeHash=True
     return fs_object
 
 
-# function to process the browser history found in the image
+# Function to process the browser history found in the image
 def processWebHistory(fileName, fs_object, chrome, firefox):
     # Download history datafiles
     exportFile(fs_object, chrome, "browser")
@@ -68,11 +68,11 @@ def processWebHistory(fileName, fs_object, chrome, firefox):
     df_merge.to_csv(f"{fileName}_history.csv")
 
 
-# function to export a selected file found in the image
+# Function to export a selected file found in the image
 def exportFile(fs_object, filePath=None, folder="extracted"):
     if filePath is None:
         # Get path of file
-        filePath = input("Enter object filePath: ")
+        filePath = input("Enter object file path: ")
     fileName = f"./{folder}/" + filePath.split("/")[-1]
     try:
         fileObject = fs_object.open(filePath)
@@ -84,7 +84,7 @@ def exportFile(fs_object, filePath=None, folder="extracted"):
         print(f"[-] Exception: {e}")
 
 
-# function to open the image file
+# Function to open the image file
 class ewf_Img_Info(pytsk3.Img_Info):
     def __init__(self, ewf_handle):
         self._ewf_handle = ewf_handle
@@ -101,7 +101,7 @@ class ewf_Img_Info(pytsk3.Img_Info):
         return self._ewf_handle.get_media_size()
 
 
-# function to recursively step through the files and directories in the image
+# Function to recursively step through the files and directories in the image
 def openFS(vol, img, output, save, computeHash):
     print("[+] Recursing through files..")
     recursed_data = []
@@ -130,7 +130,7 @@ def openFS(vol, img, output, save, computeHash):
     return fs
 
 
-# function to recursively step through the files and directories in the image
+# Function to recursively step through the files and directories in the image
 def recurseFiles(part, fs, root_dir, dirs, data, parent, computeHash):
     dirs.append(root_dir.info.fs_file.meta.addr)
     for fs_object in root_dir:
@@ -193,14 +193,14 @@ def recurseFiles(part, fs, root_dir, dirs, data, parent, computeHash):
     return data
 
 
-# function to convert timestamp to UTC timezone
+# Function to convert timestamp to UTC timezone
 def convertTime(ts):
     if str(ts) == "0":
         return ""
     return datetime.utcfromtimestamp(ts)
 
 
-# function to write output to csv file
+# Function to write output to csv file
 def csvWriter(data, output):
     if data == []:
         print("[-] No output results to write")
