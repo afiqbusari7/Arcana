@@ -32,7 +32,7 @@ def chooseImage():
 
 
 def getFullPath(fileName, regex):
-    df = displayFiles(f"{fileName}_output.csv")
+    df = pd.read_csv(f"{fileName}_output.csv")
     return df[df["File Path"].str.contains(regex)].iloc[0]["File Path"]
 
 
@@ -70,22 +70,21 @@ def getFiles(fileName):
     df = pd.read_csv(fileName)
     return df
 
-
 def iterateResults(df):
     index = 50
     maxLen = len(df)
     dfs = []
     while True:
         if index >= maxLen:
-            dfs.append(df[index - 50:])
+            dfs.append(df[index-50:])
             break
         else:
-            dfs.append(df[index - 50:index])
+            dfs.append(df[index-50:index])
         index += 50
 
     for df in dfs:
         print(df)
-        nextData = input("'N' to cancel, else press Enter continue displaying next rows: ")
+        nextData = input("'N' to cancel, else continue displaying next rows: ")
         if nextData in ["n", "N"]:
             break
 
@@ -106,12 +105,12 @@ def searchFile(fileName):
 def displayWebHistory(fileName, fs_object):
     chrome_regex = "Google\/Chrome\/User Data\/\w+\/History"
     firefox_regex = "Mozilla\/Firefox\/Profiles\/.+\/places\.sqlite"
-
+    
     chrome = getFullPath(fileName, chrome_regex)
     firefox = getFullPath(fileName, firefox_regex)
-
+    
     processWebHistory(fileName, fs_object, chrome, firefox)
-
+    
     try:
         df = pd.read_csv(f"{fileName}_history.csv", index_col=0)
         return df
@@ -155,7 +154,6 @@ def urlScan(url_df):
 
     return pd.DataFrame(urls, columns=['Index', 'URL', 'Verdict'])
 
-
 def getData(fileName, dataType="files"):
     if dataType == "files":
         print("Scanning Files..")
@@ -183,7 +181,7 @@ def fullScan(fileName):
 
 
 def selectedScan(fileName, dataType="files"):
-    if dataType == "files":
+    if dataType == "files":    
         searchString = input("Please enter the filePath, or path thereof: ")
         print(f"Scanning Files ({searchString}): ")
         file_df = getData(fileName, "files")
@@ -232,17 +230,17 @@ def virusScan(fileName):
 
 def inputRawImage():
     fileName = chooseImage()
-
     if fileName is None:
         exit()
 
     print(f"{fileName} selected. Processing image..")
 
     outputFile = f"{fileName}_output.csv"
-
+    historyFile = f"{fileName}_history.csv"
+    
     # Check if outputFile exists
     if os.path.isfile(outputFile):
-        choice = input("Image has been processed before, overwrite? (y/n) ")
+        choice = input("Image has been processed before, overwrite? (Y to overwrite) ")
     else:
         choice = 'y'
 
@@ -271,6 +269,8 @@ def inputRawImage():
         elif selection == "4":
             print(displayWebHistory(fileName, fs_object))
         elif selection == "5":
+            if not os.path.isfile(historyFile):
+                displayWebHistory(fileName, fs_object)
             virusScan(fileName)
         elif selection == "6":
             print("Exiting the program..")
