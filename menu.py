@@ -14,6 +14,7 @@ pd.set_option('display.max_columns', None)
 
 def chooseImage():
     loadList = getLoadList()
+    print("test")
     print("Available images in folder: ")
     for i, fileName in enumerate(loadList):
         print(i, fileName)
@@ -60,17 +61,41 @@ def showMenu():
     return selection
 
 
-def displayFiles(fileName):
+def getFiles(fileName):
     df = pd.read_csv(fileName)
     return df
+
+
+def iterateResults(df):
+    index = 100
+    maxLen = len(df)
+    dfs = []
+    while True:
+        if index >= maxLen:
+            dfs.append(df[index - 100:])
+            break
+        else:
+            dfs.append(df[index - 100:index])
+        index += 100
+
+    for df in dfs:
+        print(df)
+        nextData = input("'N' to cancel, else continue displaying next rows: ")
+        if nextData in ["n", "N"]:
+            break
+
+def displayFiles(fileName):
+    iterateResults(getFiles(fileName))
 
 
 def searchFile(fileName):
     searchString = input("Enter search: ")
 
     print(f"Searching for {searchString}..")
-    df = displayFiles(fileName)
-    return df.loc[df['File'].str.contains(searchString, case=False)]
+    df = getFiles(fileName)
+    filtered_df = df.loc[df['File'].str.contains(searchString, case=False)]
+
+    iterateResults(filtered_df)
 
 
 def displayWebHistory(fileName, fs_object):
