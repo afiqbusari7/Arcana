@@ -6,6 +6,8 @@ from processFunctions import processImage, getLoadList, processWebHistory, expor
 from pathlib import Path
 from hashSum import getHashFromName
 import hashlib
+import subprocess
+import webbrowser
 
 pd.set_option('display.max_columns', None)
 
@@ -27,6 +29,7 @@ def getFullPath(fileName, regex):
     df = displayFiles(f"{fileName}_output.csv")
     return df[df["File Path"].str.contains(regex)].iloc[0]["File Path"]
 
+
 def showInput():
     print("""
 ===== Arcana Input Types =====
@@ -39,6 +42,7 @@ def showInput():
     userInput = input("Choose an option: ")
     return userInput
 
+
 def showMenu():
     print("""
 ===== Arcana Functions =====
@@ -47,7 +51,9 @@ def showMenu():
 3. Export File
 4. Process and display Web History
 5. Scan for Virus
-6. Exit
+6. User Manual
+7. GitHub
+8. Exit
 """)
 
     selection = input("Choose an option: ")
@@ -193,6 +199,7 @@ def virusScan(fileName):
         else:
             print("Invalid selection, please choose again.\n")
 
+
 def inputRawImage():
     fileName = chooseImage()
     print(f"{fileName} selected. Processing image..")
@@ -201,7 +208,7 @@ def inputRawImage():
 
     # Check if outputFile exists
     if os.path.isfile(outputFile):
-        choice = input("Image has been processed before, overwrite? (Y to overwrite) ")
+        choice = input("Image has been processed before, overwrite? (y/n) ")
     else:
         choice = 'y'
 
@@ -232,10 +239,16 @@ def inputRawImage():
         elif selection == "5":
             virusScan(fileName)
         elif selection == "6":
+            subprocess.Popen("User Manual.pdf", shell=True)
+        elif selection == "7":
+            webbrowser.open('https://github.com/afiqbusari7/Arcana')
+        elif selection == "8":
             print("Exiting the program..")
             exit()
         else:
             print("Invalid selection, please choose again.\n")
+
+
 def inputFile():
     while True:
         selection = input("\nInput directory of file you would like to scan: ")
@@ -263,12 +276,13 @@ def inputFile():
         else:
             print("File could not be found in directory, please choose again.")
 
+
 def inputURL():
     while True:
         selection = input("\nInput URL you would like to scan eg. https://www.google.com: ")
         if validators.url(selection) == True:
             urls = []
-            
+
             # Process URL
             result = testURL(selection)
             # Add those which are malicious
@@ -279,11 +293,12 @@ def inputURL():
             urls.append([0, selection, verdict])
 
             # # Display websites which are malicious
-            print(pd.DataFrame(urls, columns = ['Index', 'URL', 'Verdict']))
+            print(pd.DataFrame(urls, columns=['Index', 'URL', 'Verdict']))
 
             exit()
         else:
             print("URL is in the wrong format, please enter URL again. eg. https://www.google.com")
+
 
 def main():
     print(r"""
@@ -308,7 +323,7 @@ def main():
             print("Exiting the program..")
             exit()
         else:
-            print("Invalid selection, please choose again4.\n")    
+            print("Invalid selection, please choose again4.\n")
 
 
 if __name__ == "__main__":
