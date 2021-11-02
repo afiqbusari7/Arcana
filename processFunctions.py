@@ -10,7 +10,6 @@ from os.path import isfile, join
 from datetime import datetime
 from hashSum import getHashFromName, getHashFromData
 
-
 # function to process the selected image file
 def processImage(image, img_type, output, part_type, save=True, computeHash=True):
     volume = None
@@ -27,6 +26,7 @@ def processImage(image, img_type, output, part_type, save=True, computeHash=True
         img_info = ewf_Img_Info(ewf_handle)
     else:
         img_info = pytsk3.Img_Info(image)
+
     try:
         if part_type is not None:
             attr_id = getattr(pytsk3, "TSK_VS_TYPE_" + part_type)
@@ -66,7 +66,6 @@ def processWebHistory(fileName, fs_object, chrome, firefox):
     df_merge = pd.concat([df, df2])
     df_merge.to_csv(f"{fileName}_history.csv")
 
-
 # function to export a selected file found in the image
 def exportFile(fs_object, filePath=None, folder="extracted"):
     if filePath is None:
@@ -83,6 +82,7 @@ def exportFile(fs_object, filePath=None, folder="extracted"):
         print(f"[-] Exception: {e}")
 
 
+# function to open the image file
 class ewf_Img_Info(pytsk3.Img_Info):
     def __init__(self, ewf_handle):
         self._ewf_handle = ewf_handle
@@ -99,7 +99,7 @@ class ewf_Img_Info(pytsk3.Img_Info):
         return self._ewf_handle.get_media_size()
 
 
-# function to open the image file
+# function to recursively step through the files and directories in the image
 def openFS(vol, img, output, save, computeHash):
     print("[+] Recursing through files..")
     recursed_data = []
@@ -149,13 +149,13 @@ def recurseFiles(part, fs, root_dir, dirs, data, parent, computeHash):
             try:
                 if fs_object.info.meta.type == pytsk3.TSK_FS_META_TYPE_DIR:
                     f_type = "DIR"
-                    file_ext = ""
+                    #file_ext = ""
                 else:
                     f_type = "FILE"
-                if "." in file_name:
-                    file_ext = file_name.rsplit(".")[-1].lower()
-                else:
-                    file_ext = ""
+                # if "." in file_name:
+                #     file_ext = file_name.rsplit(".")[-1].lower()
+                # else:
+                #     file_ext = ""
             except AttributeError:
                 continue
 
@@ -172,7 +172,7 @@ def recurseFiles(part, fs, root_dir, dirs, data, parent, computeHash):
                 hash = None
 
             data.append(
-                ["PARTITION {}".format(part), file_name, file_ext, f_type, create, change, modify, size, file_path,
+                ["PARTITION {}".format(part), file_name, f_type, create, change, modify, size, file_path,
                  hash])
 
             if f_type == "DIR":
@@ -206,7 +206,7 @@ def csvWriter(data, output):
     print("[+] Writing output to {}".format(output))
     with open(output, "w", newline='') as csvfile:
         csv_writer = csv.writer(csvfile)
-        headers = ["Partition", "File", "File Ext", "File Type", "Create Date", "Modify Date", "Change Date", "Size",
+        headers = ["Partition", "File", "File Type", "Create Date", "Modify Date", "Change Date", "Size",
                    "File Path", "SHA256 Hash"]
         csv_writer.writerow(headers)
         for result_list in data:

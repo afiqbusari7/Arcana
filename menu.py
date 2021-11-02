@@ -10,11 +10,16 @@ import subprocess
 import webbrowser
 
 pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
+pd.options.display.width = 0
 
 
 def chooseImage():
     loadList = getLoadList()
-    print("test")
+    if not loadList:
+        print("No available images in folder. Please move raw image into the folder.")
+        return None
+
     print("Available images in folder: ")
     for i, fileName in enumerate(loadList):
         print(i, fileName)
@@ -33,11 +38,13 @@ def getFullPath(fileName, regex):
 
 def showInput():
     print("""
-===== Arcana Input Types =====
+===== Arcana Functions =====
 1. Raw Image
 2. File
 3. URL
-4. Exit
+4. User Manual
+5. GitHub
+6. Exit
 """)
 
     userInput = input("Choose an option: ")
@@ -46,15 +53,13 @@ def showInput():
 
 def showMenu():
     print("""
-===== Arcana Functions =====
+===== Raw Image Functions =====
 1. Display Files
 2. Keyword Search
 3. Export File
 4. Process and display Web History
 5. Scan for Virus
-6. User Manual
-7. GitHub
-8. Exit
+6. Exit
 """)
 
     selection = input("Choose an option: ")
@@ -67,20 +72,20 @@ def getFiles(fileName):
 
 
 def iterateResults(df):
-    index = 100
+    index = 50
     maxLen = len(df)
     dfs = []
     while True:
         if index >= maxLen:
-            dfs.append(df[index - 100:])
+            dfs.append(df[index - 50:])
             break
         else:
-            dfs.append(df[index - 100:index])
-        index += 100
+            dfs.append(df[index - 50:index])
+        index += 50
 
     for df in dfs:
         print(df)
-        nextData = input("'N' to cancel, else continue displaying next rows: ")
+        nextData = input("'N' to cancel, else press Enter continue displaying next rows: ")
         if nextData in ["n", "N"]:
             break
 
@@ -227,6 +232,10 @@ def virusScan(fileName):
 
 def inputRawImage():
     fileName = chooseImage()
+
+    if fileName is None:
+        exit()
+
     print(f"{fileName} selected. Processing image..")
 
     outputFile = f"{fileName}_output.csv"
@@ -264,10 +273,6 @@ def inputRawImage():
         elif selection == "5":
             virusScan(fileName)
         elif selection == "6":
-            subprocess.Popen("User Manual.pdf", shell=True)
-        elif selection == "7":
-            webbrowser.open('https://github.com/afiqbusari7/Arcana')
-        elif selection == "8":
             print("Exiting the program..")
             exit()
         else:
@@ -335,6 +340,10 @@ def main():
         elif userInput == "3":
             inputURL()
         elif userInput == "4":
+            subprocess.Popen("User Manual.pdf", shell=True)
+        elif userInput == "5":
+            webbrowser.open('https://github.com/afiqbusari7/Arcana')
+        elif userInput == "6":
             print("Exiting the program..")
             exit()
         else:
