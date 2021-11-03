@@ -4,6 +4,7 @@ import logFilter
 from lxml import etree
 
 
+# Function to identify distinct event IDs from the logs
 def scan(logName):
     eid = []
     filename = os.path.basename(logName)
@@ -25,6 +26,7 @@ def scan(logName):
         print("There was an error scanning one or more of the log files.")
 
 
+# Function to parse events out to xml file based on user's criteria
 def listAll(logName, userChoice):
     errorFiles = ""
     distintEid = []
@@ -92,6 +94,7 @@ def listAll(logName, userChoice):
     return errorFiles
 
 
+# Function to generate file path and perform log analysis by running the other functions
 def analyse(dir):
     dirAdd = dir + "\*.evtx"
     errorFiles = ""
