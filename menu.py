@@ -198,7 +198,7 @@ def rawImageMenu():
 def fileMenu():
     print("""
 ===== File Functions =====
-1. Upload file from folder
+1. Upload File from Folder
 2. Back
 3. Exit
 """)
@@ -297,7 +297,7 @@ def virusScanMenu(fileName):
     print("""
 ===== Virus Scan (VirusTotal) =====
 1. Full Scan (All files and URLs)
-2. Scan files by Keyword
+2. Scan Files by Keyword
 3. Scan URLs by Keyword
 4. Back
 5. Exit
