@@ -24,9 +24,9 @@ pd.options.display.width = 0
 def arcanaMenu():
     print("""
 ===== Arcana Functions =====
-1. Raw Image
-2. File
-3. URL
+1. Scan Raw Image
+2. Scan File
+3. Scan URL
 4. Analyse Logs (LIVE)
 5. User Manual
 6. GitHub
@@ -115,57 +115,61 @@ def inputRawImage():
 # Function to perform VirusTotal scan on a file in local directory
 def inputFile():
     while True:
-        selection = input("\nInput directory of file you would like to scan: ")
-        fileName = Path(selection)
-        # Check if file exists in directory
-        if fileName.is_file():
-            # Process File
-            result = testHash(getHashFromName(fileName))
-            # Add those which are malicious
-            if result['malicious'] > 0:
-                verdict = 'Malicious'
+        selection = fileMenu()
+
+        if selection == "1":
+            fileString = input("\nInput directory of file you would like to scan: ")
+            fileName = Path(fileString)
+            # Check if file exists in directory
+            if fileName.is_file():
+                # Process File
+                result = testHash(getHashFromName(fileName))
+                # Add those which are malicious
+                if result['malicious'] > 0:
+                    verdict = 'Malicious'
+                else:
+                    verdict = 'Safe'
+
+                # Format table
+                print(tabulate([[fileString, verdict]], headers=['File', 'Verdict'], tablefmt='orgtbl'))
             else:
-                verdict = 'Safe'
-
-            # Format table
-            print(tabulate([[selection, verdict]], headers=['File', 'Verdict'], tablefmt='orgtbl'))
-            exit()
-
-        elif selection == "break":
+                print("File could not be found in directory, please choose again.")
+        elif selection == "2":
             break
-        elif selection == "exit":
+        elif selection == "3":
             print("Exiting the program..")
             exit()
         else:
-            print("File could not be found in directory, please choose again.")
-
+             print("Invalid selection, please choose again.\n")
 
 # Function to perform VirusTotal scan on a URL
 def inputURL():
     while True:
-        selection = input("\nInput URL you would like to scan eg. https://www.facebook.com: ")
-        # Check if URL is valid
-        if validators.url(selection) == True:
-            # Process URL
-            result = testURL(selection)
-            # Add those which are malicious
-            if result['malicious'] > 0:
-                verdict = 'Malicious'
+        selection = URLMenu()
+
+        if selection == "1":
+            urlstring = input("\nInput URL you would like to scan eg. https://www.facebook.com: ")
+            # Check if URL is valid
+            if validators.url(urlstring) == True:
+                # Process URL
+                result = testURL(urlstring)
+                # Add those which are malicious
+                if result['malicious'] > 0:
+                    verdict = 'Malicious'
+                else:
+                    verdict = 'Safe'
+
+                # Format table
+                print(tabulate([[urlstring, verdict]], headers=['URL', 'Verdict'], tablefmt='orgtbl'))
             else:
-                verdict = 'Safe'
-
-            # Format table
-            print(tabulate([[selection, verdict]], headers=['URL', 'Verdict'], tablefmt='orgtbl'))
-            exit()
-
-        elif selection == "break":
+                print("URL is in the wrong format, please enter URL again. eg. https://www.facebook.com")
+        elif selection == "2":
             break
-        elif selection == "exit":
+        elif selection == "3":
             print("Exiting the program..")
             exit()
         else:
-            print("URL is in the wrong format, please enter URL again. eg. https://www.facebook.com")
-
+             print("Invalid selection, please choose again.\n")
 
 # ======================== #
 # Raw Image Menu Functions #
@@ -187,6 +191,35 @@ def rawImageMenu():
     selection = input("Choose an option: ")
     return selection
 
+# =================== #
+# File Menu Functions #
+# =================== #
+
+def fileMenu():
+    print("""
+===== File Functions =====
+1. Upload file from folder
+2. Back
+3. Exit
+""")
+
+    selection = input("Choose an option: ")
+    return selection
+
+# ================== #
+# URL Menu Functions #
+# ================== #
+
+def URLMenu():
+    print("""
+===== URL Functions =====
+1. Upload URL
+2. Back
+3. Exit
+""")
+
+    selection = input("Choose an option: ")
+    return selection
 
 # Function to store csv data into pandas dataframe
 def getFiles(fileName):
