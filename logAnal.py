@@ -10,7 +10,8 @@ def scan(logName):
     filename = os.path.basename(logName)
     try:
         with open(filename + "_Event_ID_Scan.txt", "w") as f:
-            f.write("The following Event IDs are found:\n")
+            f.write("The following Event IDs are found in " + filename + ":\n")
+            print("The following Event IDs are found in " + filename + ":")
             for node, err in logFilter.xml_records(logName):
                 if err is not None:
                     continue
@@ -52,7 +53,7 @@ def listAll(logName, userChoice):
     else:
         ueid = int(userChoice)
     try:
-        with open(outputFile + ".xml", "w") as f:
+        with open(outputFile + ".xml", "w", encoding="utf-8") as f:
             f.write(
                 "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n<!--" + outputFile + "-->\n<Events>")
             for node, err in logFilter.xml_records(logName):
@@ -81,14 +82,15 @@ def listAll(logName, userChoice):
             f.write("</Events>")
         f.close()
         os.startfile(outputFile + ".xml")
-        with open(outputFile + ".txt", "w") as f:
-            f.write("The following Event IDs are found in " + filename + ":")
-            print("The following Event IDs are found:")
-            for ids in distintEid:
-                print("Event ID: " + str(ids) + "\tLog File Name: " + filename)
-                f.write("\nEvent ID: " + str(ids) + "\tLog File Name: " + filename)
-        f.close()
-        os.startfile(outputFile + ".txt")
+        if type(ueid) == str:
+            with open(outputFile + ".txt", "w") as f:
+                f.write("The following Event IDs are found in " + filename + ":")
+                print("The following Event IDs are found in " + filename + ":")
+                for ids in distintEid:
+                    print("Event ID: " + str(ids) + "\tLog File Name: " + filename)
+                    f.write("\nEvent ID: " + str(ids) + "\tLog File Name: " + filename)
+            f.close()
+            os.startfile(outputFile + ".txt")
     except KeyError:
         errorFiles += logName + "\n"
     return errorFiles
