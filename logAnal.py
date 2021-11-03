@@ -46,7 +46,7 @@ def listAll(logName, userChoice):
         with open("sysEidList.txt") as f:
             ueid = [int(x) for x in f.read().split()]
             f.close()
-        outputFile = "System_Security_Log"
+        outputFile = "Suspicious_System_Security_Log"
     else:
         ueid = int(userChoice)
         outputFile = filename
