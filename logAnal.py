@@ -6,10 +6,11 @@ from lxml import etree
 
 # Function to identify distinct event IDs from the logs
 def scan(logName):
+    errorMsg = ""
     eid = []
     filename = os.path.basename(logName)
     try:
-        with open(filename + "_Event_ID_Scan.txt", "w") as f:
+        with open("output\\" + filename + "_Event_ID_Scan.txt", "w") as f:
             f.write("The following Event IDs are found in " + filename + ":\n")
             print("The following Event IDs are found in " + filename + ":")
             for node, err in logFilter.xml_records(logName):
@@ -22,9 +23,11 @@ def scan(logName):
                     print("Event ID: " + str(seid) + "\tLog File Name: " + str(filename))
                     f.write("\nEvent ID: " + str(seid) + "\tLog File Name: " + str(filename))
         f.close()
-        os.startfile(filename + "_Event_ID_Scan.txt")
+        os.startfile("output\\" + filename + "_Event_ID_Scan.txt")
     except KeyError:
-        print("There was an error scanning one or more of the log files.")
+        errorMsg = "There was an error scanning one or more of the log files."
+    if errorMsg is not None:
+        print(errorMsg)
 
 
 # Function to parse events out to xml file based on user's criteria
@@ -53,7 +56,7 @@ def listAll(logName, userChoice):
     else:
         ueid = int(userChoice)
     try:
-        with open(outputFile + ".xml", "w", encoding="utf-8") as f:
+        with open("output\\" + outputFile + ".xml", "w", encoding="utf-8") as f:
             f.write(
                 "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n<!--" + outputFile + "-->\n<Events>")
             for node, err in logFilter.xml_records(logName):
@@ -81,16 +84,16 @@ def listAll(logName, userChoice):
                         distintEid.append(seid)
             f.write("</Events>")
         f.close()
-        os.startfile(outputFile + ".xml")
+        os.startfile("output\\" + outputFile + ".xml")
         if type(ueid) == str:
-            with open(outputFile + ".txt", "w") as f:
+            with open("output\\" + outputFile + ".txt", "w") as f:
                 f.write("The following Event IDs are found in " + filename + ":")
                 print("The following Event IDs are found in " + filename + ":")
                 for ids in distintEid:
                     print("Event ID: " + str(ids) + "\tLog File Name: " + filename)
                     f.write("\nEvent ID: " + str(ids) + "\tLog File Name: " + filename)
             f.close()
-            os.startfile(outputFile + ".txt")
+            os.startfile("output\\" + outputFile + ".txt")
     except KeyError:
         errorFiles += logName + "\n"
     return errorFiles
@@ -111,6 +114,14 @@ def analyse(dir):
         counter += 1
     print(str(counter) + ":\t" + "*ALL LOGS\n" + str(counter + 1) + ":\t" + "**Automated Scan for suspicious events")
     scanOption = int(input("Enter numerical value of your choice of log file scan: "))
+
+    print("Checking for output directory...")
+    if not os.path.exists("output"):
+        print("Output directory not found.\nCreating...")
+        os.makedirs("output")
+        print("Creation successful.")
+    else:
+        print("Output directory found.")
 
     if scanOption == len(logFiles) + 1:
         print("Scanning all logs, please wait...\n")
@@ -138,16 +149,22 @@ def analyse(dir):
             print("Scan complete.")
         else:
             print("Scan completed with errors processing the following:\n" + errorFiles)
-        quit()
+        return
     else:
         l = dir + "\\" + logFiles[scanOption - 1]
         scan(l)
 
-    ueid = input("State Event ID to list all happenings (Enter \'*\' to list all Event IDs): ")
+    ueid = input("Enter Event ID to list all events with the same Event Id  (Enter \'*\' to list all Event IDs or "
+                 "\'end\' to stop and return to main menu.): ")
+    if ueid == "end":
+        return
 
     if scanOption == len(logFiles) + 1:
         for l in glob.glob(dirAdd):
             errorFiles = listAll(l, ueid)
     else:
         errorFiles = listAll(l, ueid)
-    print("The following file(s) is/are not processed due to unforeseen error:\n" + errorFiles)
+    if errorFiles != "":
+        print("The following file(s) is/are not processed due to unforeseen error:\n" + errorFiles)
+    else:
+        print("Scan completed without errors.")
