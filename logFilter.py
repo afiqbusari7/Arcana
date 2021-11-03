@@ -1,5 +1,4 @@
 from lxml import etree
-
 from Evtx.Evtx import Evtx
 from Evtx.Views import evtx_file_xml_view
 
@@ -20,4 +19,3 @@ def xml_records(filename):
 
 def get_child(node, tag, ns="{http://schemas.microsoft.com/win/2004/08/events/event}"):
     return node.find("%s%s" % (ns, tag))
-

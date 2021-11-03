@@ -1,15 +1,14 @@
 import os
+import logAnal
+import subprocess
+import webbrowser
 import validators
 import pandas as pd
-
-import logAnal
 from virusTotalAPI import testHash, testURL
 from processFunctions import processImage, getLoadList, processWebHistory, exportFile
 from pathlib import Path
 from hashSum import getHashFromName
 from tabulate import tabulate
-import subprocess
-import webbrowser
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -140,7 +139,8 @@ def inputFile():
             print("Exiting the program..")
             exit()
         else:
-             print("Invalid selection, please choose again.\n")
+            print("Invalid selection, please choose again.\n")
+
 
 # Function to perform VirusTotal scan on a URL
 def inputURL():
@@ -169,7 +169,8 @@ def inputURL():
             print("Exiting the program..")
             exit()
         else:
-             print("Invalid selection, please choose again.\n")
+            print("Invalid selection, please choose again.\n")
+
 
 # ======================== #
 # Raw Image Menu Functions #
@@ -191,6 +192,7 @@ def rawImageMenu():
     selection = input("Choose an option: ")
     return selection
 
+
 # =================== #
 # File Menu Functions #
 # =================== #
@@ -206,6 +208,7 @@ def fileMenu():
     selection = input("Choose an option: ")
     return selection
 
+
 # ================== #
 # URL Menu Functions #
 # ================== #
@@ -220,6 +223,7 @@ def URLMenu():
 
     selection = input("Choose an option: ")
     return selection
+
 
 # Function to store csv data into pandas dataframe
 def getFiles(fileName):
@@ -432,8 +436,8 @@ def main():
             inputURL()
         elif userInput == "4":
             path = input("Please enter the path to the directory containing the logs "
-                               "(e.g. C:\Windows\System32\winevt\Logs) or enter \"1\" to use"
-                               " default path: ")
+                         "(e.g. C:\Windows\System32\winevt\Logs) or enter \"1\" to use"
+                         " default path: ")
             if int(path) == 1:
                 logAnal.analyse("C:\Windows\System32\winevt\Logs")
             else:

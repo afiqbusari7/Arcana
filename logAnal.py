@@ -1,8 +1,7 @@
-from lxml import etree
-import logFilter
-
-import glob
 import os
+import glob
+import logFilter
+from lxml import etree
 
 
 def scan(logName):
@@ -52,7 +51,8 @@ def listAll(logName, userChoice):
         outputFile = filename
     try:
         with open(outputFile + ".xml", "w") as f:
-            f.write("<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n<!--" + outputFile + "-->\n<Events>")
+            f.write(
+                "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n<!--" + outputFile + "-->\n<Events>")
             for node, err in logFilter.xml_records(logName):
                 if err is not None:
                     continue
@@ -93,7 +93,7 @@ def listAll(logName, userChoice):
 
 
 def analyse(dir):
-    dirAdd = dir+"\*.evtx"
+    dirAdd = dir + "\*.evtx"
     errorFiles = ""
 
     print("Scanning for log files...")
@@ -104,14 +104,14 @@ def analyse(dir):
     for lf in logFiles:
         print(str(counter) + ":\t" + lf)
         counter += 1
-    print(str(counter) + ":\t" + "*ALL LOGS\n" + str(counter+1) + ":\t" + "**Automated Scan for suspicious events")
+    print(str(counter) + ":\t" + "*ALL LOGS\n" + str(counter + 1) + ":\t" + "**Automated Scan for suspicious events")
     scanOption = int(input("Enter numerical value of your choice of log file scan: "))
 
-    if scanOption == len(logFiles)+1:
+    if scanOption == len(logFiles) + 1:
         print("Scanning all logs, please wait...\n")
         for l in glob.glob(dirAdd):
             scan(l)
-    elif scanOption == len(logFiles)+2:
+    elif scanOption == len(logFiles) + 2:
         print("Starting automated scan on Application log...\n")
         l = dir + "\\" + "Application.evtx"
         errorFiles = listAll(l, "appAuto")
@@ -135,15 +135,14 @@ def analyse(dir):
             print("Scan completed with errors processing the following:\n" + errorFiles)
         quit()
     else:
-        l = dir + "\\" + logFiles[scanOption-1]
+        l = dir + "\\" + logFiles[scanOption - 1]
         scan(l)
 
     ueid = input("State Event ID to list all happenings (Enter \'*\' to list all Event IDs): ")
 
-    if scanOption == len(logFiles)+1:
+    if scanOption == len(logFiles) + 1:
         for l in glob.glob(dirAdd):
             errorFiles = listAll(l, ueid)
     else:
         errorFiles = listAll(l, ueid)
     print("The following file(s) is/are not processed due to unforeseen error:\n" + errorFiles)
-

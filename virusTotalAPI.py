@@ -22,7 +22,7 @@ def parseResults(resp):
     return count
 
 
-### Testing API for Hash
+# Testing API for Hash
 def testHash(FILE_ID):
     try:
         resp = vtotal.request(f"files/{FILE_ID}")
@@ -39,7 +39,7 @@ def testHash(FILE_ID):
 # FILE_ID = "71a0d6adc569d1a1d50e8e865a05c10887d849ed3b18a78096af917a19a716e4"
 # testHash(FILE_ID)
 
-### Testing API for URL
+# Testing API for URL
 def testURL(url):
     try:
         # URL safe encode URL in base64 format
