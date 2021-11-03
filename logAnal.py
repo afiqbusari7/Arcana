@@ -9,45 +9,84 @@ def scan(logName):
     eid = []
     filename = os.path.basename(logName)
     try:
-        for node, err in logFilter.xml_records(logName):
-            if err is not None:
-                continue
-            sys = logFilter.get_child(node, "System")
-            seid = int(logFilter.get_child(sys, "EventID").text)
-            if seid not in eid:
-                eid.append(seid)
-                print("Event ID: " + str(seid) + "\tLog File Name: " + str(filename))
+        with open(filename + "_Event_ID_Scan.txt", "w") as f:
+            f.write("The following Event IDs are found:\n")
+            for node, err in logFilter.xml_records(logName):
+                if err is not None:
+                    continue
+                sys = logFilter.get_child(node, "System")
+                seid = int(logFilter.get_child(sys, "EventID").text)
+                if seid not in eid:
+                    eid.append(seid)
+                    print("Event ID: " + str(seid) + "\tLog File Name: " + str(filename))
+                    f.write("\nEvent ID: " + str(seid) + "\tLog File Name: " + str(filename))
+        f.close()
+        os.startfile(filename + "_Event_ID_Scan.txt")
     except KeyError:
         print("There was an error scanning one or more of the log files.")
 
 
-def listAll(logName, ueid):
+def listAll(logName, userChoice):
     errorFiles = ""
-    # filename = os.path.splitext(os.path.basename(l))[0] + ".xml"
+    distintEid = []
+    filename = os.path.basename(logName)
+    if userChoice == "*":
+        ueid = userChoice
+    elif userChoice == "appAuto":
+        with open("appEidList.txt") as f:
+            ueid = [int(x) for x in f.read().split()]
+            f.close()
+        outputFile = "Suspicious_Application_Log"
+    elif userChoice == "securityAuto":
+        with open("secEidList.txt") as f:
+            ueid = [int(x) for x in f.read().split()]
+            f.close()
+        outputFile = "Suspicious_Security_Log"
+    elif userChoice == "systemAuto":
+        with open("sysEidList.txt") as f:
+            ueid = [int(x) for x in f.read().split()]
+            f.close()
+        outputFile = "System_Security_Log"
+    else:
+        ueid = int(userChoice)
+        outputFile = filename
     try:
-        for node, err in logFilter.xml_records(logName):
-            if err is not None:
-                continue
-            sys = logFilter.get_child(node, "System")
-            if ueid == "*":
-                print(etree.tostring(node, pretty_print=True))
-            elif ueid == "appAuto":
-                with open("appEidList.txt") as f:
-                    secEid = [int(x) for x in f.read().split()]
-                if int(logFilter.get_child(sys, "EventID").text) in secEid:
+        with open(outputFile + ".xml", "w") as f:
+            f.write("<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n<!--" + outputFile + "-->\n<Events>")
+            for node, err in logFilter.xml_records(logName):
+                if err is not None:
+                    continue
+                sys = logFilter.get_child(node, "System")
+                if ueid == "*":
                     print(etree.tostring(node, pretty_print=True))
-            elif ueid == "securityAuto":
-                with open("secEidList.txt") as f:
-                    secEid = [int(x) for x in f.read().split()]
-                if int(logFilter.get_child(sys, "EventID").text) in secEid:
+                    f.write("\n" + etree.tostring(node, encoding='utf8').decode('utf8'))
+                    seid = int(logFilter.get_child(sys, "EventID").text)
+                    if seid not in distintEid:
+                        distintEid.append(seid)
+                elif userChoice == "appAuto" or userChoice == "securityAuto" or userChoice == "systemAuto":
+                    if int(logFilter.get_child(sys, "EventID").text) in ueid:
+                        print(etree.tostring(node, pretty_print=True))
+                        f.write("\n" + etree.tostring(node, encoding='utf8').decode('utf8'))
+                        seid = int(logFilter.get_child(sys, "EventID").text)
+                        if seid not in distintEid:
+                            distintEid.append(seid)
+                elif ueid == int(logFilter.get_child(sys, "EventID").text):
                     print(etree.tostring(node, pretty_print=True))
-            elif ueid == "systemAuto":
-                with open("sysEidList.txt") as f:
-                    secEid = [int(x) for x in f.read().split()]
-                if int(logFilter.get_child(sys, "EventID").text) in secEid:
-                    print(etree.tostring(node, pretty_print=True))
-            elif int(ueid) == int(logFilter.get_child(sys, "EventID").text):
-                print(etree.tostring(node, pretty_print=True))
+                    f.write("\n" + etree.tostring(node, encoding='utf8').decode('utf8'))
+                    seid = int(logFilter.get_child(sys, "EventID").text)
+                    if seid not in distintEid:
+                        distintEid.append(seid)
+            f.write("</Events>")
+        f.close()
+        os.startfile(outputFile + ".xml")
+        with open(outputFile + ".txt", "w") as f:
+            f.write("The following Event IDs are found in " + filename + ":")
+            print("The following Event IDs are found:")
+            for ids in distintEid:
+                print("Event ID: " + str(ids) + "\tLog File Name: " + filename)
+                f.write("\nEvent ID: " + str(ids) + "\tLog File Name: " + filename)
+        f.close()
+        os.startfile(outputFile + ".txt")
     except KeyError:
         errorFiles += logName + "\n"
     return errorFiles
