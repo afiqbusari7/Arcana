@@ -27,7 +27,7 @@ def testHash(FILE_ID):
     try:
         resp = vtotal.request(f"files/{FILE_ID}")
     except:
-        return {["malicious"]: 0}  # If file have not been scanned before
+        return {"malicious": 0}  # If file have not been scanned before
     # pprint(resp.data)
     return parseResults(resp)
 

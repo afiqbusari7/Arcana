@@ -344,8 +344,6 @@ def fileScan(file_df):
     # Scan files
     files = []
     for index, row in file_df.iterrows():
-        if index > 0:  # Limit testing to one file, due to API constraints
-            break
         # Process Hash
         result = testHash(row['SHA256 Hash'])
         # Add those which are malicious
@@ -354,6 +352,7 @@ def fileScan(file_df):
         else:
             verdict = 'Safe'
         files.append([index, row['File Path'], verdict])
+        break # Limit testing to one file, due to API constraints
 
     return pd.DataFrame(files, columns=['Index', 'File Path', 'Verdict'])
 
@@ -363,8 +362,6 @@ def urlScan(url_df):
     # Scan URLs
     urls = []
     for index, row in url_df.iterrows():
-        if index > 0:  # Limit testing to one URL, due to API constraints
-            break
         # Process URL
         result = testURL(row['URL'])
         # Add those which are malicious
@@ -373,6 +370,7 @@ def urlScan(url_df):
         else:
             verdict = 'Safe'
         urls.append([index, row['URL'], verdict])
+        break # Limit testing to one URL, due to API constraints
 
     return pd.DataFrame(urls, columns=['Index', 'URL', 'Verdict'])
 
