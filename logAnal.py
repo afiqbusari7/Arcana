@@ -31,6 +31,7 @@ def listAll(logName, userChoice):
     errorFiles = ""
     distintEid = []
     filename = os.path.basename(logName)
+    outputFile = filename
     if userChoice == "*":
         ueid = userChoice
     elif userChoice == "appAuto":
@@ -50,7 +51,6 @@ def listAll(logName, userChoice):
         outputFile = "Suspicious_System_Security_Log"
     else:
         ueid = int(userChoice)
-        outputFile = filename
     try:
         with open(outputFile + ".xml", "w") as f:
             f.write(
