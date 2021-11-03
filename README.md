@@ -14,8 +14,11 @@ API_KEY = ""
 IMPORTANT: VirusTotal will only allow limited scan requests for free accounts. Please upgrade to the premium VirusTotal API to increase the total requests you can make. 
 ## Required Libraries
 - libewf-python
+- lxml
 - pandas
-- pypytsk3
+- pytsk3
+- python-evtx
+- requests
 - tabulate
 - validators
 - virustotal-python
