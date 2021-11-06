@@ -145,19 +145,13 @@ def recurseFiles(part, fs, root_dir, dirs, data, parent, computeHash):
 
         try:
             file_name = fs_object.info.name.name.decode("utf-8")
-            # file_path = "{}/{}".format(b"/".join(parent), fs_object.info.name.name)
             file_path = f'{"/".join(parent)}/{file_name}'
 
             try:
                 if fs_object.info.meta.type == pytsk3.TSK_FS_META_TYPE_DIR:
                     f_type = "DIR"
-                    # file_ext = ""
                 else:
                     f_type = "FILE"
-                # if "." in file_name:
-                #     file_ext = file_name.rsplit(".")[-1].lower()
-                # else:
-                #     file_ext = ""
             except AttributeError:
                 continue
 
