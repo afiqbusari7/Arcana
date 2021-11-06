@@ -1,6 +1,5 @@
 # Arcana
 
-
 ## VirusTotal API Key
 1. To make use of the VirusTotal API, you will need to first sign up an account on VirusTotal with the following link: https://www.virustotal.com/gui/join-us
 2. You will then need to copy the API key found on the VirusTotal account user menu.
@@ -11,7 +10,8 @@
 ```
 API_KEY = ""
 ```
-IMPORTANT: VirusTotal will only allow limited scan requests for free accounts. Please upgrade to the premium VirusTotal API to increase the total requests you can make. 
+IMPORTANT: VirusTotal will only allow limited scan requests for free accounts. Please upgrade to the premium VirusTotal API to increase the total requests you can make.
+
 ## Required Libraries
 - libewf-python
 - lxml
@@ -22,9 +22,19 @@ IMPORTANT: VirusTotal will only allow limited scan requests for free accounts. P
 - tabulate
 - validators
 - virustotal-python
+
 ## Installation
 ```
 git clone https://github.com/afiqbusari7/Arcana
 cd Arcana
 pip install -r requirements.txt
 ```
+
+## Detailed Architecture
+![image](https://github.com/afiqbusari7/Arcana/blob/098744ff4e80f6aea7d661697e897c370bcbe7a3/documentation/DetailedArchitecture.png)
+
+## User Manual
+![document](https://docs.google.com/viewer?url=https://github.com/afiqbusari7/Arcana/blob/098744ff4e80f6aea7d661697e897c370bcbe7a3/documentation/UserManual.pdf)
+
+## Demonstration
+![video](https://youtu.be/61fZSNJ50EI)
