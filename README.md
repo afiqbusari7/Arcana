@@ -37,4 +37,4 @@ pip install -r requirements.txt
 ![image](https://github.com/afiqbusari7/Arcana/blob/098744ff4e80f6aea7d661697e897c370bcbe7a3/documentation/DetailedArchitecture.png)
 
 ## YouTube Demonstration
-[![video](https://img.youtube.com/vi/61fZSNJ50EI/maxresdefault.jpg)](https://youtu.be/61fZSNJ50EI)
+[![video](https://img.youtube.com/vi/61fZSNJ50EI/maxresdefault.jpg)](https://youtu.be/UWxRXGyhRIY)
