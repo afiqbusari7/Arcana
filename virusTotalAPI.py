@@ -3,7 +3,7 @@ from pprint import pprint
 from base64 import urlsafe_b64encode
 from virustotal_python import Virustotal
 
-API_KEY = "f6957b4ceada8ef6fb49a7c84fc143f8cb6f5595038f0cace0798ffb674b040c"
+API_KEY = ""
 
 vtotal = Virustotal(API_KEY=API_KEY, API_VERSION="v3")
 

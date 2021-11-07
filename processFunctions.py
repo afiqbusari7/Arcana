@@ -8,7 +8,7 @@ import pandas as pd
 from os import listdir
 from os.path import isfile, join
 from datetime import datetime
-from hashSum import getHashFromName, getHashFromData
+from hashSum import getHashFromData
 
 
 # Function to process the selected image file

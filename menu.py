@@ -441,7 +441,8 @@ def main():
             else:
                 logAnal.analyse(path)
         elif userInput == "5":
-            subprocess.Popen("User Manual.pdf", shell=True)
+            current_path = os.getcwd()
+            subprocess.Popen(current_path + '/documentation/UserManual.pdf', shell=True)
         elif userInput == "6":
             webbrowser.open('https://github.com/afiqbusari7/Arcana')
         elif userInput == "7":
