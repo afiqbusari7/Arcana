@@ -1,4 +1,4 @@
-# Arcana
+# Arcana by Team Spectre
 
 ## VirusTotal API Key
 1. To make use of the VirusTotal API, you will need to first sign up an account on VirusTotal with the following link: https://www.virustotal.com/gui/join-us
@@ -30,11 +30,12 @@ cd Arcana
 pip install -r requirements.txt
 ```
 
-## Arcana User Manual
-[User Manual](https://github.com/afiqbusari7/Arcana/tree/main/documentation/UserManual.pdf)
+## Arcana Documentation
+[Comprehensive User Manual](https://github.com/afiqbusari7/Arcana/tree/main/documentation/UserManual.pdf)
+[Assignment Report](https://github.com/afiqbusari7/Arcana/tree/main/documentation/ICT2202_Assignment_1_Report_TeamSpectre.pdf)
 
 ## Detailed Architecture
 ![image](https://github.com/afiqbusari7/Arcana/blob/098744ff4e80f6aea7d661697e897c370bcbe7a3/documentation/DetailedArchitecture.png)
 
 ## YouTube Demonstration
-[![video](https://img.youtube.com/vi/61fZSNJ50EI/maxresdefault.jpg)](https://youtu.be/UWxRXGyhRIY)
+[![video](https://img.youtube.com/vi/61fZSNJ50EI/maxresdefault.jpg)](https://youtu.be/hvgIOqOFwjE)
