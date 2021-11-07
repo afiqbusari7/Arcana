@@ -31,7 +31,7 @@ pip install -r requirements.txt
 ```
 
 ## Arcana Documentation
-[Comprehensive User Manual](https://github.com/afiqbusari7/Arcana/tree/main/documentation/UserManual.pdf)
+[Comprehensive User Manual](https://github.com/afiqbusari7/Arcana/tree/main/documentation/UserManual.pdf)  
 [Assignment Report](https://github.com/afiqbusari7/Arcana/tree/main/documentation/ICT2202_Assignment_1_Report_TeamSpectre.pdf)
 
 ## Detailed Architecture
